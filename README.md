@@ -1,2 +1,2 @@
 # jqueryui-forms
-a project using jquery ui forms
+a Django project using jquery ui forms
