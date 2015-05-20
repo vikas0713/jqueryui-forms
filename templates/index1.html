@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load crispy_forms_tags %}
+<link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/style1.css"/>
+    <link rel="stylesheet" href="/static/css/jquery-ui.css"/>
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css"/>
+    
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/js/custom.js"></script>
+
+
+
+
+<div class="se-pre-con"></div>
+<div class="container-fluid">
+    <div id='ct'></div>
+<button id='openDlg3' class="btn btn-danger btn-sm">ADD NEW LOAD</button>&nbsp;
+<button id='opendriver' class="btn btn-danger pull-right btn-sm"><i class='fa fa-plus'></i>&nbsp;ADD NEW DRIVER</button>&nbsp;
+<button id='opencarrier' class="btn btn-danger pull-right btn-sm"><i class='fa fa-plus'></i>&nbsp;ADD NEW SHIPPER</button>&nbsp;
+<button id='opentruck' class="btn btn-danger pull-right btn-sm"><i class='fa fa-plus'></i>&nbsp;ADD NEW TRUCK</button>&nbsp;
+<button id='opentrailer' class="btn btn-danger pull-right btn-sm"><i class='fa fa-plus'></i>&nbsp;ADD NEW TRAILER</button>&nbsp;
+    <h5><i class="fa fa-circle-thin pending"></i>
+                                <a href="/get_status/Pending" >PENDING</a>
+                            &nbsp;
+                            <i class="fa fa-circle-thin opened"></i>
+                                <a href="/get_status/Opened/">OPENED</a>
+                            &nbsp;
+                            <i class="fa fa-circle-thin dispatched"></i>
+                                <a href="/get_status/Dispatched/">DISPATCHED</a>
+                            &nbsp;
+                            <i class="fa fa-circle-thin covered"></i>
+                                <a href="/get_status/Covered/">COVERED</a>
+                            &nbsp;
+                            <i class="fa fa-circle-thin unloaded"></i>
+                                <a href="/get_status/Unloaded/">UNLOADED</a>
+                           &nbsp;
+                            <i class="fa fa-circle-thin loaded"></i>
+                                <a href="/get_status/Loaded/">LOADED</a>
+                           &nbsp;
+                            <i class="fa fa-circle-thin inyard"></i>
+                                <a href="/get_status/InYard/">IN YARD</a>
+                           &nbsp;
+                            <i class="fa fa-circle-thin delivered"></i>
+                                <a href="/get_status/Delivered/">DELIVERED</a>
+                           &nbsp;
+                            <i class="fa fa-circle-thin free"></i>
+                                <a href="/get_status/Free/">FREE</a>
+                           &nbsp;
+                            <i class="fa fa-circle-thin completed"></i>
+                                <a href="/get_status/Complete/">COMPLETED</a>
+                           &nbsp;
+                           <i class="fa fa-circle-thin on-route"></i>
+                                <a href="/get_status/OnRoute/">ON-ROUTE</a>
+                           </h5>&nbsp;
+
+<div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Load#</th>
+                                        <th class="text-center">Driver/carrier</th>
+                                        <th class="text-center">Ship Date/Time</th>
+                                        <th class="text-center">Del Date/Time</th>
+                                        <th class="text-center">Customer</th>
+                                        <th class="text-center">Origin</th>
+                                        <th class="text-center">Destination</th>
+                                        <th class="text-center">Load Status</th>
+                                        <th class="text-center">Truck</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in data %}
+                                   <tr>
+                                     <td>{{i.load}}</td>
+                                     <td>{% if 'none' in i.driver %}
+                                         Carrier:{{i.carrier}}{%elif 'none' in i.carrier%}
+                                         Driver :{{i.driver}}{%endif%}
+                                       </td>
+                                     <td>{{i.ship_date}}</td>
+                                     <td>{{i.c_date}}</td>
+                                     <td>{{i.shipper}}</td>
+                                     <td>{{i.location}}</td>
+                                     <td>{{i.c_location}}</td>
+                                     <td>
+                                         <form action='/changed_status/{{i.load}}/' method='POST'>
+                                             {% csrf_token %}
+                                         <select name='status' onchange="this.form.submit()" id='page_list'>
+                                         <option selected='selected'>{{i.status}}</option> 
+                                         <option value='Loaded'>Loaded</option>
+                                         <option value='Unloaded'>Unloaded</option>
+                                         <option value='Dispatched'>Dispatched</option>
+                                         <option value='Delivered'>Delivered</option>
+                                         <option value='InYard'>In Yard</option>
+                                         <option value='OnRoute'>OnRoute</option>
+                                         <option value='Completed'>Completed</option>
+                                         <option value='Covered'>Covered</option>
+                                         <option value='Opened'>Opened</option>
+                                         <option value='Pending'>Pending</option>
+                                         <option value='Free'>Free</option>
+                                         <option value='Delete'>Delete Load</option>
+                                         </select>
+                                        </form>
+                                    </td>
+                                       <td>{% if 'none' in i.truck %}{{ '--------' }}{% else %}
+                                            {{ i.truck }}{% endif %}
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+</div>
+<div id="dialog3" title="New Load">
+        <form action='/submit/' method='post' id="myForm">
+            <a href='#' id='carrier1'><i class='fa fa-location-arrow'></i>Carrier</a>&nbsp;
+            <a href='#' id='driver1'><i class='fa fa-truck'></i>Driver</a>
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </div>
+    
+    <div id="dialog4" title="New Driver">
+        <form action="/submit_info/driver/" method='post' id="mydriver">
+            {% csrf_token %}
+
+                
+                {% for field in driverform %}
+            <formset class='col-md-4'>
+                   {{ field.label_tag }}  &nbsp;{{ field }}<br/>
+                   </formset>
+                {% endfor %}
+            <input type="submit" value='submit' class='btn btn-default'>
+
+        </form>
+    </div>
+    <div id="dialog5" title="New Shipper">
+        <form action="/submit_info/customer/" method='post' id="myshipper">
+        {% csrf_token %}
+        {% crispy shipperform %}
+            
+        </form>
+    </div>
+    <div id="dialog6" title="New Truck">
+        <form action="/submit_info/truck/" method='post' id="mytruck">
+        {% csrf_token %}
+        {% crispy truckform %}
+        </form>
+        
+    </div>
+    <div id="dialog7" title="New Trailer">
+        <form action="/submit_info/trailer/" method='post' id="mytrailer">
+        {% csrf_token %}
+        {% for field in trailerform %}
+            <formset class='col-md-4'>
+                   {{ field.label_tag }} &nbsp;{{ field }}<br/>
+                   </formset>
+                {% endfor %}
+            
+        </form>
+    </div>
+{% endblock %}

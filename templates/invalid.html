@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{%if errors %}
+<h2 class="text-center"> {{ errors }}  try again<br/> <img src='/static/img/invalid.png' class='img-circle' width=200 height 200> </h2>
+{% endif %}
+{% if data%}
+<div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Load#</th>
+                                        <th class="text-center">Driver/carrier</th>
+                                        <th class="text-center">Ship Date/Time</th>
+                                        <th class="text-center">Del Date/Time</th>
+                                        <th class="text-center">Customer</th>
+                                        <th class="text-center">Origin</th>
+                                        <th class="text-center">Destination</th>
+                                        <th class="text-center">Load Status</th>
+                                        <th class="text-center">Truck</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in data %}
+                                   <tr>
+                                     <td>{{i.load}}</td>
+                                     <td>{% if 'none' in i.driver %}
+                                         Carrier:{{i.carrier}}{%elif 'none' in i.carrier%}
+                                         Driver :{{i.driver}}{%endif%}
+                                       </td>
+                                     <td>{{i.ship_date}}</td>
+                                     <td>{{i.c_date}}</td>
+                                     <td>{{i.shipper}}</td>
+                                     <td>{{i.location}}</td>
+                                     <td>{{i.c_location}}</td>
+                                     <td>
+                                         <form action='/changed_status/{{i.load}}/' method='POST'>
+                                             {% csrf_token %}
+                                         <select name='status' onchange="this.form.submit()" id='page_list'>
+                                         <option selected='selected'>{{i.status}}</option> 
+                                         <option value='Loaded'>Loaded</option>
+                                         <option value='Unloaded'>Unloaded</option>
+                                         <option value='Dipatched'>Dispatched</option>
+                                         <option value='InYard'>In Yard</option>
+                                         <option value='OnRoute'>OnRoute</option>
+                                         <option value='Completed'>Completed</option>
+                                         <option value='Covered'>Covered</option>
+                                         <option value='Opened'>Opened</option>
+                                         <option value='Delete'>Delete Load</option>
+                                         </select>
+                                        </form>
+                                    </td>
+                                       <td>{% if 'none' in i.truck %}{{ '--------' }}{% else %}
+                                            {{ i.truck }}{% endif %}
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+</div>
+    {% else %}
+ <h2 class="text-center">No Results !</h2>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+hr {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+select{
+ width:125px;
+}
+input{
+    line-height: .9px;
+}
+
+input[type=number]{
+ width:104px;
+}
+
+.form-divider{
+    background-color: black;
+    border:2px solid black;
+    margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+input[type=date],input[type=time]{
+  line-height: 8px;
+}
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(images/Preloader_2.gif) center no-repeat #fff;
+}
+thead>tr>th{
+    font-size: 10px;
+
+}
+#page_list{
+    width: 80px;
+}
+.btn-sm{
+    font-size: 8px;
+}
+
+.shipper{
+ border-top: 2px solid black;
+
+}
+.first{
+ border-bottom: 2px solid black;
+    padding: 5px 5px 5px 5px;
+
+}
